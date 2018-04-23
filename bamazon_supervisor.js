@@ -110,17 +110,8 @@ function add_new_dept()
           }
         
         });
-
-      // Select distinct(dept_name) from department
-      // check if the dept name exists,
-      // if no , then add , else display error msg.
-      // close connection. 
-       console.log("Work in progess for SQL Joins !!! , Coming Soon ! ")
-
-      connection.end();
-    
-
-	})
+      
+	});
 
 }
 
@@ -133,9 +124,46 @@ function view_revenue_report()
        // check if the dept name exists,
       // if no , then add , else display error msg.
       // close connection. 
+ 
+       var queryStr = 'SELECT department.dept_id,department.dept_name, department.dept_cost,products.product_sales ,';
+           queryStr += ' (products.product_sales - department.dept_cost) as Revenue';
+           queryStr += ' FROM bamazon.products inner join department on products.department_name=department.dept_name group by department_name;';
+       
+            connection.query(queryStr, function(err, data) {
+            if (err) throw err;
+
+             if (data != '')
+              {
+//                  console.log(data);
 
 
+                  console.log('---------------------------------------------\n');
+                  console.log('  *** Revenue Report By Department *** ');
+                  console.log('---------------------------------------------\n');
+          
+                  var strOut = '';
+                  for (var i = 0; i < data.length; i++) {
+                      strOut = '';
+                      strOut += 'Dept ID: ' + data[i].dept_id + '  //  ';
+                      strOut += 'Dept Name: ' + data[i].dept_name + '  //  ';
+                      strOut += 'Dept Cost: ' + data[i].dept_cost + '  //  ';
+                      strOut += 'Dept Sale: ' + data[i].product_sales + '  //  ';
+                      strOut += 'Dept Profit: ' + data[i].Revenue +'\n';
 
+                      console.log(strOut);
+                  }
+
+
+              } 
+              else
+              {
+                  console.log("Please contact sys adm for system issue");
+                 
+              }
+
+              connection.end(); 
+
+           });
 
 
 }
